@@ -30,13 +30,13 @@ class Pair:
     margin_trading_enabled: bool
     margin_trading_enabled_5x: bool
     margin_trading_enabled_10x: bool
-    max_quantity: str
-    min_quantity: str
-    max_price: str
-    min_price: str
+    max_quantity: float
+    min_quantity: float
+    max_price: float
+    min_price: float
     last_update_date: int
-    quantity_tick_size: str
-    price_tick_size: str
+    quantity_tick_size: float
+    price_tick_size: float
     price_precision: int
     quantity_precision: int
 
