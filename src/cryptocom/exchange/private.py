@@ -213,6 +213,54 @@ class Account:
             for trade in data.get("trade_list") or []
         ]
 
+    async def f_create_order(
+        self,
+        pair: Pair,
+        side: OrderSide,
+        type_: OrderType,
+        quantity: float,
+        price: float = 0,
+        force_type: OrderForceType = None,
+        exec_type: OrderExecType = None,
+        client_id: int = None,
+    ) -> int:
+        """Create raw order with buy or sell side."""
+        data = {
+            "instrument_name": pair.name,
+            "side": side.value,
+            "type": type_.value,
+        }
+
+        if force_type:
+            data["time_in_force"] = force_type.value
+
+        if exec_type:
+            data["exec_inst"] = exec_type.value
+
+        old_quantity = quantity
+        quantity = "{:.{}f}".format(quantity, pair.quantity_precision)
+        if old_quantity and not float(quantity):
+            raise ValueError(
+                "Your quantity {} is less then accepted precision {}"
+                "for pair: {}".format(old_quantity, quantity, pair)
+            )
+
+        data["quantity"] = quantity
+
+        if client_id:
+            data["client_oid"] = str(client_id)
+
+        if price:
+            if type_ == OrderType.MARKET:
+                raise ValueError(
+                    "Error, MARKET execution do not support price value"
+                )
+            data["price"] = "{:.{}f}".format(price, pair.price_precision)
+
+        resp = await self.api.post("private/create-order", {"params": data})
+        return int(resp["order_id"])
+
+
     async def create_order(
         self,
         pair: Pair,
@@ -321,6 +369,26 @@ class Account:
             raise ApiError(
                 f"Status not changed for: {order}, must be in: {statuses}"
             )
+
+    async def f_buy_market(
+        self, pair: Pair, quantity: float, wait_for_fill=False
+    ) -> int:
+        """Buy market order."""
+        order_id = await self.f_create_order(
+            pair, OrderSide.BUY, OrderType.MARKET, quantity
+        )
+        if wait_for_fill:
+            await self.wait_for_status(
+                order_id,
+                (
+                    OrderStatus.FILLED,
+                    OrderStatus.CANCELED,
+                    OrderStatus.EXPIRED,
+                    OrderStatus.REJECTED,
+                ),
+            )
+
+        return order_id
 
     async def buy_market(
         self, pair: Pair, spend: float, wait_for_fill=False
