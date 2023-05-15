@@ -39,6 +39,16 @@ class Exchange:
                 i["instrument_name"],
                 price_precision=i["price_decimals"],
                 quantity_precision=i["quantity_decimals"],
+                margin_trading_enabled=i["margin_trading_enabled"],
+                margin_trading_enabled_5x=i["margin_trading_enabled_5x"],
+                margin_trading_enabled_10x=i["margin_trading_enabled_10x"],
+                max_quantity=i["max_quantity"],
+                min_quantity=i["min_quantity"],
+                max_price=i["max_price"],
+                min_price=i["min_price"],
+                last_update_date=i["last_update_date"],
+                quantity_tick_size=i["quantity_tick_size"],
+                price_tick_size=i["price_tick_size"]
             )
             for i in data["instruments"]
         ]

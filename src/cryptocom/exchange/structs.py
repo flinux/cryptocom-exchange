@@ -25,6 +25,18 @@ class Coin:
 @dataclass
 class Pair:
     exchange_name: str
+    quote_currency: str
+    base_currency: str
+    margin_trading_enabled: bool
+    margin_trading_enabled_5x: bool
+    margin_trading_enabled_10x: bool
+    max_quantity: str
+    min_quantity: str
+    max_price: str
+    min_price: str
+    last_update_date: int
+    quantity_tick_size: str
+    price_tick_size: str
     price_precision: int
     quantity_precision: int
 
