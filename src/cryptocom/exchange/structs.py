@@ -69,7 +69,7 @@ class DefaultPairDict(dict):
         try:
             return super().__getitem__(name)
         except KeyError:
-            return Pair(name, 8, 8)
+            return Pair(name, "", "", False, False, False, 8, 8, 1, 1, 1, 1, 1, 1, 1)
 
 
 @dataclass
