@@ -37,6 +37,8 @@ class Exchange:
         return [
             Pair(
                 i["instrument_name"],
+                quote_currency=i["quote_currency"],
+                base_currency=i["base_currency"],
                 price_precision=i["price_decimals"],
                 quantity_precision=i["quantity_decimals"],
                 margin_trading_enabled=i["margin_trading_enabled"],
